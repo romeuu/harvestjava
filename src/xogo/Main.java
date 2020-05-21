@@ -8,18 +8,19 @@ public class Main{
 	public static Player player;
 
 	public static void main(String[] args) throws InterruptedException {
-		int contador = 0;
+		int commands = 0;
+		boolean remember = false;
 		
 		System.out.println("Oh... hello there! Let's create a character for you!");
 		System.out.println("How do you want me to call you?");
 		
 		Scanner scanner = new Scanner(System.in);
-		String nombre = scanner.nextLine();
+		String name = scanner.nextLine();
 		
-		System.out.println("Alright... So, hello "+nombre+"!");
+		System.out.println("Alright... So, hello "+name+"!");
 		System.out.println("Let's start playing...");
 		
-		Player player = new Player(nombre);
+		Player player = new Player(name);
 		Main.player = player;
 				
 		separator();
@@ -30,7 +31,6 @@ public class Main{
 		
 		menu();
 		while(stop != true) {
-//			rememberCommands();
 			int option = scanner.nextInt();
 			int energy = player.getEnergy();
 			
@@ -49,7 +49,6 @@ public class Main{
 			}
 			
 			if(option == 5) {
-				player.setEnergy(1);
 				if(energy < 20) {
 					System.out.println("Your player is currently sleeping...");
 					animationSleeping();
@@ -61,6 +60,12 @@ public class Main{
 				}
 			}
 			
+			if(option == 6) {
+				System.out.println("See you soon!");
+				System.exit(0);
+			}
+			
+			commands++;
 			
 		}
 		
@@ -87,19 +92,19 @@ public class Main{
 	public static void checkMining(double prob) {
 		if(prob > 0.10 && prob < 0.50) {
 			player.addItem("Stone");
-			System.out.println("Um... stone!");
+			System.out.println("Um... stone! Your remaining energy is: "+player.getEnergy());
 		}
 		if(prob > 0.50 && prob < 0.75) {
 			player.addItem("Coal");
-			System.out.println("Well, it's coal!");
+			System.out.println("Well, it's coal! Your remaining energy is: "+player.getEnergy());
 		}
 		if(prob > 0.76 && prob < 0.95) {
 			player.addItem("Gold");
-			System.out.println("Oh! It's gold!");
+			System.out.println("Oh! It's gold! Your remaining energy is: "+player.getEnergy());
 		}
 		if(prob > 0.96 && prob < 1) {
 			player.addItem("Diamond");
-			System.out.println("Beautiful! A diamond!");
+			System.out.println("Beautiful! A diamond! Your remaining energy is: "+player.getEnergy());
 		}
 	}
 	
@@ -114,11 +119,14 @@ public class Main{
                 e.printStackTrace();
             }
 		}
-		System.out.print("You are ready to have a great day now!");
+		System.out.println("You are ready to have a great day now!");
+		rememberCommands();
 	}
 	
 	public static void rememberCommands() {
-		System.out.println("1. Mine, 2. Harvest, 3. Go to the shop, 4. Check items, 5. Go to sleep, 6. Stop playing");
+		separator();
+		System.out.println("Command helper! 1. Mine, 2. Harvest, 3. Go to the shop, 4. Check items, 5. Go to sleep, 6. Stop playing");
+		separator();
 	}
 
 	
