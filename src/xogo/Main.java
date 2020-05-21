@@ -60,6 +60,10 @@ public class Main{
 				}
 			}
 			
+			if(option == 3) {
+				enteringShop();
+			}
+			
 			if(option == 6) {
 				System.out.println("See you soon!");
 				System.exit(0);
@@ -90,6 +94,9 @@ public class Main{
 	}
 	
 	public static void checkMining(double prob) {
+		if(prob > 0.00 && prob < 0.10) {
+			System.out.println("Um... you missed! Your remaining energy is: "+player.getEnergy());
+		}
 		if(prob > 0.10 && prob < 0.50) {
 			player.addItem("Stone");
 			System.out.println("Um... stone! Your remaining energy is: "+player.getEnergy());
@@ -127,6 +134,47 @@ public class Main{
 		separator();
 		System.out.println("Command helper! 1. Mine, 2. Harvest, 3. Go to the shop, 4. Check items, 5. Go to sleep, 6. Stop playing");
 		separator();
+	}
+	
+	public static void enteringShop() {
+		Scanner scannerShop = new Scanner(System.in);
+		separator();
+		System.out.println("Welcome to the shop, here you may sell your items!");
+		int coal = Collections.frequency(player.getItems(), "Coal");
+		int gold = Collections.frequency(player.getItems(), "Gold");
+		int diamond = Collections.frequency(player.getItems(), "Diamond");
+		int stone = Collections.frequency(player.getItems(), "Stone");
+		System.out.println("Your items: \nCoal: "+coal+"\nGold: "+gold+"\nDiamond: "+diamond+"\nStone: "+stone);
+		separator();
+		System.out.println("Here are the prices: \nCoal: 5\nGold: 15\nDiamond: 30\nStone: 1");
+		separator();
+		System.out.println("What do you want to sell? (Coal/Gold/Diamond/Stone)");
+		String answer = scannerShop.nextLine();
+		
+		if("COAL".equals(answer.toUpperCase())) {
+			removeAll(player.items,"Coal");
+			player.setMoney(player.getMoney() + coal * 5);
+		}
+		if("GOLD".equals(answer.toUpperCase())) {
+			removeAll(player.items,"Gold");
+			player.setMoney(player.getMoney() + gold * 15);
+		}
+		if("DIAMOND".equals(answer.toUpperCase())) {
+			removeAll(player.items,"Diamond");
+			player.setMoney(player.getMoney() + diamond * 30);
+		}
+		if("STONE".equals(answer.toUpperCase())) {
+			removeAll(player.items,"Stone");
+			player.setMoney(player.getMoney() + stone * 1);
+		}
+		
+		System.out.println("Your money is "+player.getMoney());
+	}
+	
+	public static void removeAll(List<String> list, String element) {
+	    while (list.contains(element)) {
+	        list.remove(element);
+	    }
 	}
 
 	

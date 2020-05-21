@@ -8,7 +8,7 @@ public class Player {
 	private String name;
 	private int exp = 10;
 	private int energy = 100;
-	private List<String> items = new ArrayList<String>();
+	public List<String> items = new ArrayList<String>();
 
 	//CONSTRUCTOR
 	public Player(String name) {
