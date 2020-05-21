@@ -30,7 +30,7 @@ public class Main{
 		
 		menu();
 		while(stop != true) {
-			rememberCommands();
+//			rememberCommands();
 			int option = scanner.nextInt();
 			int energy = player.getEnergy();
 			
