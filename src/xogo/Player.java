@@ -3,7 +3,7 @@ package xogo;
 public class Player {
 	private int money = 0;
 	private String name;
-	private int exp = 0;
+	private int exp = 10;
 	
 
 	public Player(String name) {
