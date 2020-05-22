@@ -62,6 +62,7 @@ public class Main{
 			
 			if(option == 3) {
 				enteringShop();
+				rememberCommands();
 			}
 			
 			if(option == 6) {
@@ -151,30 +152,62 @@ public class Main{
 		System.out.println("What do you want to sell? (Coal/Gold/Diamond/Stone)");
 		String answer = scannerShop.nextLine();
 		
+		Scanner keep = new Scanner(System.in);
+		
 		if("COAL".equals(answer.toUpperCase())) {
 			removeAll(player.items,"Coal");
 			player.setMoney(player.getMoney() + coal * 5);
+			System.out.println("Do you want to keep selling things? (Y/N)");
+			String keepSelling = keep.nextLine(); 
+			if("Y".equals(keepSelling.toUpperCase())) {
+				enteringShop();
+			}else {
+				checkMoney();
+			}
 		}
 		if("GOLD".equals(answer.toUpperCase())) {
 			removeAll(player.items,"Gold");
 			player.setMoney(player.getMoney() + gold * 15);
+			System.out.println("Do you want to keep selling things? (Y/N)");
+			String keepSelling = keep.nextLine(); 
+			if("Y".equals(keepSelling.toUpperCase())) {
+				enteringShop();
+			}else {
+				checkMoney();
+			}
 		}
 		if("DIAMOND".equals(answer.toUpperCase())) {
 			removeAll(player.items,"Diamond");
 			player.setMoney(player.getMoney() + diamond * 30);
+			System.out.println("Do you want to keep selling things? (Y/N)");
+			String keepSelling = keep.nextLine(); 
+			if("Y".equals(keepSelling.toUpperCase())) {
+				enteringShop();
+			}else {
+				checkMoney();
+			}
 		}
 		if("STONE".equals(answer.toUpperCase())) {
 			removeAll(player.items,"Stone");
 			player.setMoney(player.getMoney() + stone * 1);
+			System.out.println("Do you want to keep selling things? (Y/N)");
+			String keepSelling = keep.nextLine(); 
+			if("Y".equals(keepSelling.toUpperCase())) {
+				enteringShop();
+			}else {
+				checkMoney();
+			}
 		}
-		
-		System.out.println("Your money is "+player.getMoney());
 	}
 	
 	public static void removeAll(List<String> list, String element) {
 	    while (list.contains(element)) {
 	        list.remove(element);
 	    }
+	}
+	
+	public static void checkMoney() {
+		System.out.println("Your money is : "+player.getMoney());
 	}
 
 	
