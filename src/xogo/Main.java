@@ -1,79 +1,50 @@
 package xogo;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
+import java.io.File;
 
 public class Main{
 	private static boolean stop = false;
 	public static Player player;
+	public static Farm farm;
 
-	public static void main(String[] args) throws InterruptedException {
-		int commands = 0;
-		boolean remember = false;
-		
-		System.out.println("Oh... hello there! Let's create a character for you!");
-		System.out.println("How do you want me to call you?");
+	public static void main(String[] args) throws Exception {
 		
 		Scanner scanner = new Scanner(System.in);
-		String name = scanner.nextLine();
-		
-		System.out.println("Alright... So, hello "+name+"!");
-		System.out.println("Let's start playing...");
-		
-		Player player = new Player(name);
-		Main.player = player;
-				
-		separator();
-		
-		Farm farm = new Farm();
-		
-		System.out.println("Your new farm is watining for you!\nWhat do you want to do first?");
-		
-		menu();
-		while(stop != true) {
-			int option = scanner.nextInt();
-			int energy = player.getEnergy();
-			
-			if(option == 1) {
-				if(player.getEnergy() > 15) {
-					double prob = Math.random();
-					checkMining(prob);
-					player.setEnergy(player.getEnergy() - 5);
-				}else {
-					System.out.println("Insufficient energy. You should think about going to sleep.");
-				}
-			}
-			
-			if(option == 4) {
-				System.out.println(player.getItems());
-			}
-			
-			if(option == 5) {
-				if(energy < 20) {
-					System.out.println("Your player is currently sleeping...");
-					animationSleeping();
-					if(energy + 50 > 100) {
-						player.setEnergy(100);
-					}else {
-						player.setEnergy(energy + 50);
-					}
-				}
-			}
-			
-			if(option == 3) {
-				enteringShop();
-				rememberCommands();
-			}
-			
-			if(option == 6) {
-				System.out.println("See you soon!");
-				System.exit(0);
-			}
-			
-			commands++;
-			
+
+		if(checkIfSaved()) { 
+		   System.out.println("Loading last game...");
+		   System.out.println("Your game has been loaded succesfully!");
+		   loadGame();
+		}else {
+			createCharacter();
+			createFarm();
 		}
 		
+		menu();
+		
+		while(stop != true) {
+			int option = scanner.nextInt();
+			mainGame(option);
+		}
+		
+		scanner.close();
+		
+	}
+	
+	public static boolean checkIfSaved() {
+		File f = new File("1.save");
+		if(f.exists() && f.isFile()) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static void createFarm() {
+		Farm farm = new Farm();
+		farm.setOwner(Main.player);
+		Main.farm = farm;
+		System.out.println("Your new farm is watining for you!\nWhat do you want to do first?");
 	}
 	
 	public static void separator() {
@@ -208,6 +179,115 @@ public class Main{
 	
 	public static void checkMoney() {
 		System.out.println("Your money is : "+player.getMoney());
+	}
+	
+	public static void createCharacter() {
+		System.out.println("Oh... hello there! Let's create a character for you!");
+		System.out.println("How do you want me to call you?");
+		
+		Scanner scanner = new Scanner(System.in);
+		String name = scanner.nextLine();
+		
+		System.out.println("Alright... So, hello "+name+"!");
+		System.out.println("Let's start playing...");
+		
+		Player player = new Player(name);
+		Main.player = player;
+				
+		separator();
+	}
+	
+	public static void getItems(Player player) {
+		if(!(player.getItems().isEmpty())) {
+			System.out.println("Here are your items: "+player.getItems());
+		}else {
+			System.out.println("Sorry, you have got no items right now!");
+		}
+	}
+	
+	public static void mainGame(int option) throws Exception {
+		int energy = player.getEnergy();
+		
+		if(option == 1) {
+			if(player.getEnergy() > 15) {
+				double prob = Math.random();
+				checkMining(prob);
+				player.setEnergy(player.getEnergy() - 5);
+			}else {
+				System.out.println("Insufficient energy. You should think about going to sleep.");
+			}
+		}
+		
+		if(option == 4) {
+			getItems(Main.player);
+		}
+		
+		if(option == 5) {
+			if(energy < 20) {
+				System.out.println("Your player is currently sleeping...");
+				animationSleeping();
+				if(energy + 50 > 100) {
+					player.setEnergy(100);
+				}else {
+					player.setEnergy(energy + 50);
+				}
+			}
+		}
+		
+		if(option == 3) {
+			enteringShop();
+			rememberCommands();
+		}
+		
+		if(option == 6) {
+			SaveData data = new SaveData();
+			
+			data.setPlayer(Main.player);
+			data.setFarm(Main.farm);
+			
+			
+			try {
+                ResourceManager.save(data, "1.save");
+                System.out.println("See you soon, your game has been saved!");
+            }
+            catch (Exception e) {
+                System.out.println("Couldn't save: " + e.getMessage());
+            }
+			
+			System.exit(0);
+		}
+		
+		if(option == 7) {
+			loadGame();
+		}
+	}
+	
+	public static void loadGame() {
+		try {
+            SaveData data = (SaveData) ResourceManager.load("1.save");
+            Player player = new Player(data.getPlayer().getName());
+            Farm farm = new Farm();
+            
+            Main.player = player;
+            Main.farm = farm;
+            
+            Main.player.setName(data.getPlayer().getName());
+            Main.player.setEnergy(data.getPlayer().getEnergy());
+            Main.player.setMoney(data.getPlayer().getMoney());
+            Main.player.setExp(data.getPlayer().getExp());
+            Main.player.items = data.getPlayer().getItems();
+            
+            Main.farm.setDimensionsfarmx(data.getFarm().getDimensionsfarmx());
+            Main.farm.setDimensionsfarmy(data.getFarm().getDimensionsfarmy());
+            Main.farm.setDimensionsx(data.getFarm().getDimensionsfarmx());
+            Main.farm.setDimensionsy(data.getFarm().getDimensionsfarmy());
+            Main.farm.setFields(data.getFarm().getFields());
+            Main.farm.setLakes(data.getFarm().getLakes());
+            Main.farm.setOwner(Main.player);
+        }
+        catch (Exception e) {
+            System.out.println("Couldn't load save data: " + e.getMessage());
+        }
 	}
 
 	

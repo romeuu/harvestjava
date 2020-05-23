@@ -3,7 +3,10 @@ package xogo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player implements java.io.Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	
 	private int money = 0;
 	private String name;
 	private int exp = 10;
