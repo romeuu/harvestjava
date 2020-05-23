@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 public class Main{
 	private static boolean stop = false;
 	public static Player player;
+	public static Farm farm;
 
 	public static void main(String[] args) throws InterruptedException {
 		
@@ -28,7 +29,7 @@ public class Main{
 	
 	public static void createFarm() {
 		Farm farm = new Farm();
-		
+		Main.farm = farm;
 		System.out.println("Your new farm is watining for you!\nWhat do you want to do first?");
 	}
 	
@@ -225,8 +226,43 @@ public class Main{
 		}
 		
 		if(option == 6) {
-			System.out.println("See you soon!");
+			SaveData data = new SaveData();
+			//Player
+			data.setName(Main.player.getName());
+			data.setMoney(Main.player.getMoney());
+			data.setExp(Main.player.getExp());
+			data.setItems(Main.player.getItems());
+			data.setEnergy(Main.player.getEnergy());
+			
+			//Farm
+			data.setFields(Main.farm.getFields());
+			data.setLakes(Main.farm.getLakes());
+			data.setDimensionsx(Main.farm.getDimensionsx());
+			data.setDimensionsy(Main.farm.getDimensionsy());
+			data.setDimensionsfarmx(Main.farm.getDimensionsfarmx());
+			data.setDimensionsfarmy(Main.farm.getDimensionsfarmy());
+			data.setOwner(Main.player);
+			
+			
+			try {
+                ResourceManager.save(data, "1.save");
+                System.out.println("See you soon, your game has been saved!");
+            }
+            catch (Exception e) {
+                System.out.println("Couldn't save: " + e.getMessage());
+            }
+			
 			System.exit(0);
+		}
+		
+		if(option == 7) {
+			try {
+                SaveData data = (SaveData) ResourceManager.load("1.save");
+                Main.player.setName(data.getName());
+            }
+            catch (Exception e) {
+                System.out.println("Couldn't load save data: " + e.getMessage());
+            }
 		}
 	}
 
