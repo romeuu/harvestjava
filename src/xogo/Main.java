@@ -1,20 +1,25 @@
 package xogo;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
+import java.io.File;
 
 public class Main{
 	private static boolean stop = false;
 	public static Player player;
 	public static Farm farm;
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws Exception {
 		
 		Scanner scanner = new Scanner(System.in);
-		
-		createCharacter();
-		
-		createFarm();
+
+		if(checkIfSaved()) { 
+		   System.out.println("Loading last game...");
+		   System.out.println("Your game has been loaded succesfully!");
+		   loadGame();
+		}else {
+			createCharacter();
+			createFarm();
+		}
 		
 		menu();
 		
@@ -27,8 +32,17 @@ public class Main{
 		
 	}
 	
+	public static boolean checkIfSaved() {
+		File f = new File("1.save");
+		if(f.exists() && f.isFile()) {
+			return true;
+		}
+		return false;
+	}
+	
 	public static void createFarm() {
 		Farm farm = new Farm();
+		farm.setOwner(Main.player);
 		Main.farm = farm;
 		System.out.println("Your new farm is watining for you!\nWhat do you want to do first?");
 	}
@@ -191,7 +205,7 @@ public class Main{
 		}
 	}
 	
-	public static void mainGame(int option) {
+	public static void mainGame(int option) throws Exception {
 		int energy = player.getEnergy();
 		
 		if(option == 1) {
@@ -227,21 +241,9 @@ public class Main{
 		
 		if(option == 6) {
 			SaveData data = new SaveData();
-			//Player
-			data.setName(Main.player.getName());
-			data.setMoney(Main.player.getMoney());
-			data.setExp(Main.player.getExp());
-			data.setItems(Main.player.getItems());
-			data.setEnergy(Main.player.getEnergy());
 			
-			//Farm
-			data.setFields(Main.farm.getFields());
-			data.setLakes(Main.farm.getLakes());
-			data.setDimensionsx(Main.farm.getDimensionsx());
-			data.setDimensionsy(Main.farm.getDimensionsy());
-			data.setDimensionsfarmx(Main.farm.getDimensionsfarmx());
-			data.setDimensionsfarmy(Main.farm.getDimensionsfarmy());
-			data.setOwner(Main.player);
+			data.setPlayer(Main.player);
+			data.setFarm(Main.farm);
 			
 			
 			try {
@@ -256,14 +258,36 @@ public class Main{
 		}
 		
 		if(option == 7) {
-			try {
-                SaveData data = (SaveData) ResourceManager.load("1.save");
-                Main.player.setName(data.getName());
-            }
-            catch (Exception e) {
-                System.out.println("Couldn't load save data: " + e.getMessage());
-            }
+			loadGame();
 		}
+	}
+	
+	public static void loadGame() {
+		try {
+            SaveData data = (SaveData) ResourceManager.load("1.save");
+            Player player = new Player(data.getPlayer().getName());
+            Farm farm = new Farm();
+            
+            Main.player = player;
+            Main.farm = farm;
+            
+            Main.player.setName(data.getPlayer().getName());
+            Main.player.setEnergy(data.getPlayer().getEnergy());
+            Main.player.setMoney(data.getPlayer().getMoney());
+            Main.player.setExp(data.getPlayer().getExp());
+            Main.player.items = data.getPlayer().getItems();
+            
+            Main.farm.setDimensionsfarmx(data.getFarm().getDimensionsfarmx());
+            Main.farm.setDimensionsfarmy(data.getFarm().getDimensionsfarmy());
+            Main.farm.setDimensionsx(data.getFarm().getDimensionsfarmx());
+            Main.farm.setDimensionsy(data.getFarm().getDimensionsfarmy());
+            Main.farm.setFields(data.getFarm().getFields());
+            Main.farm.setLakes(data.getFarm().getLakes());
+            Main.farm.setOwner(Main.player);
+        }
+        catch (Exception e) {
+            System.out.println("Couldn't load save data: " + e.getMessage());
+        }
 	}
 
 	

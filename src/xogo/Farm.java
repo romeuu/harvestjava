@@ -1,6 +1,8 @@
 package xogo;
 
-public class Farm {
+public class Farm implements java.io.Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	private int dimensionsx = 5;
 	private int dimensionsy = 5;
@@ -28,14 +30,6 @@ public class Farm {
 
 	public void setDimensionsy(int dimensionsy) {
 		this.dimensionsy = dimensionsy;
-	}
-
-	public int setFields() {
-		return fields;
-	}
-
-	public void getFields(int fields) {
-		this.fields = fields;
 	}
 
 	public int getLakes() {
