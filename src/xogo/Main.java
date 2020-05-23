@@ -8,72 +8,28 @@ public class Main{
 	public static Player player;
 
 	public static void main(String[] args) throws InterruptedException {
-		int commands = 0;
-		boolean remember = false;
-		
-		System.out.println("Oh... hello there! Let's create a character for you!");
-		System.out.println("How do you want me to call you?");
 		
 		Scanner scanner = new Scanner(System.in);
-		String name = scanner.nextLine();
 		
-		System.out.println("Alright... So, hello "+name+"!");
-		System.out.println("Let's start playing...");
+		createCharacter();
 		
-		Player player = new Player(name);
-		Main.player = player;
-				
-		separator();
+		createFarm();
 		
+		menu();
+		
+		while(stop != true) {
+			int option = scanner.nextInt();
+			mainGame(option);
+		}
+		
+		scanner.close();
+		
+	}
+	
+	public static void createFarm() {
 		Farm farm = new Farm();
 		
 		System.out.println("Your new farm is watining for you!\nWhat do you want to do first?");
-		
-		menu();
-		while(stop != true) {
-			int option = scanner.nextInt();
-			int energy = player.getEnergy();
-			
-			if(option == 1) {
-				if(player.getEnergy() > 15) {
-					double prob = Math.random();
-					checkMining(prob);
-					player.setEnergy(player.getEnergy() - 5);
-				}else {
-					System.out.println("Insufficient energy. You should think about going to sleep.");
-				}
-			}
-			
-			if(option == 4) {
-				System.out.println(player.getItems());
-			}
-			
-			if(option == 5) {
-				if(energy < 20) {
-					System.out.println("Your player is currently sleeping...");
-					animationSleeping();
-					if(energy + 50 > 100) {
-						player.setEnergy(100);
-					}else {
-						player.setEnergy(energy + 50);
-					}
-				}
-			}
-			
-			if(option == 3) {
-				enteringShop();
-				rememberCommands();
-			}
-			
-			if(option == 6) {
-				System.out.println("See you soon!");
-				System.exit(0);
-			}
-			
-			commands++;
-			
-		}
-		
 	}
 	
 	public static void separator() {
@@ -208,6 +164,70 @@ public class Main{
 	
 	public static void checkMoney() {
 		System.out.println("Your money is : "+player.getMoney());
+	}
+	
+	public static void createCharacter() {
+		System.out.println("Oh... hello there! Let's create a character for you!");
+		System.out.println("How do you want me to call you?");
+		
+		Scanner scanner = new Scanner(System.in);
+		String name = scanner.nextLine();
+		
+		System.out.println("Alright... So, hello "+name+"!");
+		System.out.println("Let's start playing...");
+		
+		Player player = new Player(name);
+		Main.player = player;
+				
+		separator();
+	}
+	
+	public static void getItems(Player player) {
+		if(!(player.getItems().isEmpty())) {
+			System.out.println("Here are your items: "+player.getItems());
+		}else {
+			System.out.println("Sorry, you have got no items right now!");
+		}
+	}
+	
+	public static void mainGame(int option) {
+		int energy = player.getEnergy();
+		
+		if(option == 1) {
+			if(player.getEnergy() > 15) {
+				double prob = Math.random();
+				checkMining(prob);
+				player.setEnergy(player.getEnergy() - 5);
+			}else {
+				System.out.println("Insufficient energy. You should think about going to sleep.");
+			}
+		}
+		
+		if(option == 4) {
+			getItems(Main.player);
+		}
+		
+		if(option == 5) {
+			if(energy < 20) {
+				System.out.println("Your player is currently sleeping...");
+				animationSleeping();
+				if(energy + 50 > 100) {
+					player.setEnergy(100);
+				}else {
+					player.setEnergy(energy + 50);
+				}
+			}
+		}
+		
+		if(option == 3) {
+			enteringShop();
+			rememberCommands();
+		}
+		
+		if(option == 6) {
+			System.out.println("See you soon!");
+			System.exit(0);
+		}
 	}
 
 	
